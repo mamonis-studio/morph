@@ -7,10 +7,10 @@
 <meta name="description" content="ブラウザで完結する一括画像フォーマット変換。HEIC対応、制限なし、アップロード不要。Privacy-first batch image converter.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0a0b;--bg1:#111113;--bg2:#141416;--border:#1a1a1e;--border2:#2a2a2e;--green:#00ff88;--green-dim:rgba(0,255,136,0.06);--green-glow:rgba(0,255,136,0.08);--green-faint:#00ff8844;--red:#ff4444;--yellow:#ffaa00;--text:#e8e8e8;--text2:#ccc;--text3:#888;--text4:#555;--text5:#333;--text6:#2a2a2e;--mono:'JetBrains Mono','SF Mono','Fira Code',monospace;--heading:'Space Grotesk',sans-serif;--jp:'Noto Sans JP',sans-serif}
+:root{--bg:#0A0A09;--bg1:#101010;--bg2:#16150F;--border:#1F1E18;--border2:#2A2925;--green:#F4F2EC;--green-dim:rgba(244,242,236,0.06);--green-glow:rgba(244,242,236,0.09);--green-faint:rgba(244,242,236,0.27);--red:#C9C7BF;--yellow:#A8A69E;--text:#F0EEE8;--text2:#C9C7BF;--text3:#94928B;--text4:#6B6A65;--text5:#55534E;--text6:#2A2925;--mono:'IBM Plex Mono','SF Mono',monospace;--heading:'IBM Plex Sans JP',sans-serif;--jp:'IBM Plex Sans JP',sans-serif;--mx-void:#0A0A09;--mx-wall:#101010;--mx-seam:#030302;--mx-dim:#6B6A65;--mx-mid:#94928B;--mx-face:#EDEBE4;--mx-face-hi:#FFFFFF;--mx-text:#F0EEE8;--mx-on-face:#14140F;--font-body:'IBM Plex Sans JP',sans-serif;--font-mono:'IBM Plex Mono',monospace}
 html{background:var(--bg);color:var(--text);font-family:var(--mono)}
 body{min-height:100vh}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -21,7 +21,7 @@ body{min-height:100vh}
 .header{margin-bottom:40px}
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .header-left{display:flex;align-items:baseline;gap:12px}
-.logo{font-size:36px;font-weight:700;letter-spacing:-1px;color:#fff;font-family:var(--heading)}
+.hero-title{font-size:36px;font-weight:700;letter-spacing:-1px;color:var(--text);font-family:var(--heading)}
 .subtitle{font-size:11px;color:var(--green);letter-spacing:2px;font-weight:500;text-transform:uppercase}
 .tagline{font-size:13px;color:var(--text4);line-height:1.6}
 .heic-status{margin-left:8px;font-family:var(--mono)}
@@ -156,22 +156,81 @@ body{min-height:100vh}
   .lang-group{align-self:flex-end;margin-top:-28px}
   .resize-fields{margin-left:0}
 }
-</style>
+
+    /* mamonis reskin：無彩色・六角語彙 */
+    * { border-radius: 0 !important; }
+    .logo { font-family: 'Archivo Black', var(--heading) !important; letter-spacing: 0.06em; }
+
+    /* ===== 共通ヘッダー要素（ダーク版メニュー）===== */
+    .hd-home { display:inline-flex; align-items:center; text-decoration:none; margin-right:4px; }
+    #logo-ico { transform-origin:50% 50%; will-change:transform; }
+    #menuOverlay { z-index:10000 !important; }
+  /* 六角ハンバーガー：目地3本 → 60°✕ に変形。六角は開くと真っ黒に沈む */
+  .menu-btn { background:none; border:0; padding:2px; cursor:pointer; line-height:0; }
+  .menu-btn svg { width:30px; height:30px; overflow:visible; }
+  .mb-hex { fill:none; stroke:var(--mx-text); stroke-width:1; transition:fill .3s ease, stroke .3s ease; }
+  .mb-l { stroke:var(--mx-text); stroke-width:1.4; transform-box:view-box; transform-origin:16px 16px; transition:transform .45s cubic-bezier(0.22,1,0.36,1), opacity .3s ease, stroke .3s ease; }
+  .menu-btn:hover .mb-hex { fill:#1A1A16; }
+  body.menu-open .mb-hex { fill:#EDEBE4; stroke:#EDEBE4; }
+  body.menu-open .mb-l { stroke:#14140F; }
+  body.menu-open .l1 { transform:rotate(60deg) translateY(4px); }   /* 60°で✕（45°禁止） */
+  body.menu-open .l2 { opacity:0; }
+  body.menu-open .l3 { transform:rotate(-60deg) translateY(-4px); }
+
+  /* フルスクリーン六角メニュー（§8：白ブロックが点灯するメニュー） */
+  #menuOverlay {
+    position:fixed; inset:0; z-index:25; display:flex; align-items:center; justify-content:center;
+    gap:18px; flex-wrap:wrap; padding:0 8vw;
+    background:rgba(10,10,9,0.74); backdrop-filter:blur(1.5px); -webkit-backdrop-filter:blur(1.5px);
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  body.menu-open #menuOverlay { opacity:1; pointer-events:auto; }
+  #menuHex { max-width:88vw; max-height:66vh; overflow:visible; }
+  .menu-cell { cursor:pointer; outline:none; opacity:0; transform:translateX(var(--fx,0)); transform-box:fill-box; transform-origin:center; transition:opacity .45s ease, transform .6s cubic-bezier(0.22,1,0.36,1); transition-delay:var(--d,0s); }
+  body.menu-open .menu-cell { opacity:1; transform:none; }
+  .menu-cell .mc-f { fill:var(--mx-face); transition:fill .4s ease; }
+  .menu-cell:hover .mc-f, .menu-cell:focus-visible .mc-f { fill:#FFFFFF; }
+  .menu-cell .mc-l { fill:var(--mx-on-face); font-size:16px; font-weight:600; letter-spacing:0.06em; font-family:var(--font-body); pointer-events:none; }
+  .menu-cell .mc-s { fill:var(--mx-dim); font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; pointer-events:none; }
+  .mc-seam { stroke:rgba(10,10,9,0.30); stroke-width:1; pointer-events:none; opacity:0; transition:opacity .3s ease .4s; }   /* §6 継ぎ目線：到着後に浮かぶ */
+  body.menu-open .mc-seam { opacity:1; }
+  @media (prefers-reduced-motion: reduce){ .mb-l,#menuOverlay,#menuOverlay a{ transition:none; } }
+  
+    /* ===== canonical header（ダーク版：構造はトップと同一）===== */
+    header.site { position:fixed; top:0; left:0; right:0; z-index:10001; height:58px; background:#0E0E0C; display:flex; align-items:center; justify-content:space-between; padding:0 22px; }
+    header.site .seam { position:absolute; left:0; right:0; bottom:0; height:1px; background:#26251F; overflow:hidden; }
+    header.site .seam::before { content:''; position:absolute; top:0; left:-64px; width:64px; height:1px; background:var(--mx-text); opacity:0.85; animation:hdsweep 7s linear infinite; }
+    @keyframes hdsweep { 0%{left:-64px;} 16%{left:100%;} 100%{left:100%;} }
+    header.site .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    header.site .logo span { font-family:"Archivo Black", var(--heading); font-size:13px; font-weight:400; letter-spacing:0.12em; color:var(--mx-text); }
+    header.site nav { display:flex; align-items:center; gap:14px; }
+    body { padding-top:58px; }
+  </style>
 </head>
 <body>
+<header class="site">
+  <a class="logo" href="https://mamonis.studio/" aria-label="MAMONIS ホーム">
+    <svg id="logo-ico" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 20.66,7 20.66,17 12,22 3.34,17 3.34,7" fill="none" stroke="#F0EEE8" stroke-width="1"/><polygon points="12,6.2 17.02,9.1 17.02,14.9 12,17.8 6.98,14.9 6.98,9.1" fill="none" stroke="#6B6A65" stroke-width="1"/><circle cx="12" cy="12" r="1.1" fill="#F4F2EC"/></svg>
+    <span>MAMONIS</span>
+  </a>
+  <nav>
+    <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JA</button>
+    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    <button class="menu-btn" id="menuBtn" aria-label="メニュー" aria-expanded="false"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="mb-hex" points="8,3 24,3 30,16 24,29 8,29 2,16"/><line class="mb-l l1" x1="10" y1="12" x2="22" y2="12"/><line class="mb-l l2" x1="9" y1="16" x2="23" y2="16"/><line class="mb-l l3" x1="11" y1="20" x2="21" y2="20"/></svg></button>
+  </nav>
+  <div class="seam" aria-hidden="true"></div>
+</header>
+<nav id="menuOverlay" aria-label="メニュー"><svg id="menuHex" xmlns="http://www.w3.org/2000/svg" aria-label="メニュー"></svg></nav>
 
 <div class="wrap">
   <!-- Header -->
   <div class="header">
     <div class="header-top">
       <div class="header-left">
-        <h1 class="logo">MORPH</h1>
+        <h1 class="hero-title">MORPH</h1>
         <span class="subtitle" id="subtitle"></span>
       </div>
-      <div class="lang-group">
-        <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JA</button>
-        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-      </div>
+      
     </div>
     <p class="tagline" id="tagline"></p>
   </div>
@@ -772,6 +831,65 @@ loadScript("https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js", "
 loadScript("https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js", "zip", () => !!window.JSZip);
 loadScript("https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js", "piexif", () => !!window.piexif);
 renderUI();
+</script>
+
+<script>
+(function(){try{
+  var RM=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var logo=document.querySelector('.logo'), ico=document.getElementById('logo-ico');
+  var spin=false, ang=0, spinRAF=0, spinLast=0;
+  function sf(t){ if(!spin)return; var dt=spinLast?Math.min(50,t-spinLast):16; spinLast=t; ang=(ang+dt*0.11)%360; ico.style.transition='none'; ico.style.transform='rotate('+ang.toFixed(2)+'deg)'; spinRAF=requestAnimationFrame(sf); }
+  if(logo&&ico&&!RM.matches){
+    logo.addEventListener('mouseenter',function(){ spin=true; spinLast=0; spinRAF=requestAnimationFrame(sf); });
+    logo.addEventListener('mouseleave',function(){ spin=false; cancelAnimationFrame(spinRAF); var sn=Math.round(ang/60)*60; ico.style.transition='transform 0.5s cubic-bezier(0.22,1,0.36,1)'; ico.style.transform='rotate('+sn+'deg)'; ang=((sn%360)+360)%360; });
+  }
+}catch(e){console.warn('logo spin failed',e);}})();
+</script>
+<script>
+(function(){try{
+  var D60=Math.PI/3, S3=Math.sqrt(3);
+  (function buildMenu(){
+    const svgm=document.getElementById('menuHex'); if(!svgm) return;
+    const Rm=60;
+    const hp=(cx,cy,rad)=>{let a=[];for(let k=0;k<6;k++)a.push((cx+rad*Math.cos(k*D60)).toFixed(1)+','+(cy+rad*Math.sin(k*D60)).toFixed(1));return a.join(' ');};
+    const cpos=(c,r)=>[c*1.5*Rm, r*S3*Rm+(((c%2)+2)%2)*S3*Rm/2];
+    const items=[
+      {c:0,r:0,label:'Services',sub:'01',href:'https://mamonis.studio/services/'},
+      {c:1,r:0,label:'Tools',   sub:'02',href:'https://mamonis.studio/tools/'},
+      {c:0,r:1,label:'Blog',    sub:'03',href:'https://mamonis.studio/blog/'},
+      {c:1,r:1,label:'Contact', sub:'04',href:'https://mamonis.studio/contact/'},
+    ].map(it=>{const [x,y]=cpos(it.c,it.r);return {...it,x,y};});
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    items.forEach(p=>{minX=Math.min(minX,p.x-Rm);maxX=Math.max(maxX,p.x+Rm);minY=Math.min(minY,p.y-S3*Rm/2);maxY=Math.max(maxY,p.y+S3*Rm/2);});
+    const pad=8, ox=-minX+pad, oy=-minY+pad, w=(maxX-minX)+pad*2, h=(maxY-minY)+pad*2;
+    let hexes='', seams='';
+    items.forEach((p,i)=>{
+      const cx=p.x+ox, cy=p.y+oy, fx=(p.c===0?-46:46);
+      hexes+='<a class="menu-cell" href="'+p.href+'" aria-label="'+p.label+'" style="--d:'+(i*0.06)+'s;--fx:'+fx+'vw">'
+        +'<polygon class="mc-f" points="'+hp(cx,cy,Rm)+'"/>'
+        +'<text class="mc-l" x="'+cx+'" y="'+(cy-1)+'" text-anchor="middle">'+p.label+'</text>'
+        +'<text class="mc-s" x="'+cx+'" y="'+(cy+16)+'" text-anchor="middle">'+p.sub+'</text></a>';
+    });
+    const nd=S3*Rm*1.04;
+    for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){
+      const dx=items[j].x-items[i].x, dy=items[j].y-items[i].y, dist=Math.hypot(dx,dy);
+      if(dist<nd){
+        const cmx=(items[i].x+items[j].x)/2+ox, cmy=(items[i].y+items[j].y)/2+oy;
+        const px=-dy/dist, py=dx/dist, hf=Rm/2;
+        seams+='<line class="mc-seam" x1="'+(cmx-px*hf).toFixed(1)+'" y1="'+(cmy-py*hf).toFixed(1)+'" x2="'+(cmx+px*hf).toFixed(1)+'" y2="'+(cmy+py*hf).toFixed(1)+'"/>';
+      }
+    }
+    svgm.setAttribute('viewBox','0 0 '+w+' '+h);
+    svgm.setAttribute('width',w); svgm.setAttribute('height',h);
+    svgm.innerHTML=hexes+seams;
+  })();
+
+  const menuBtn=document.getElementById('menuBtn');
+  function setMenu(open){ document.body.classList.toggle('menu-open',open); menuBtn.setAttribute('aria-expanded',open?'true':'false'); }
+  menuBtn.addEventListener('click',()=>setMenu(!document.body.classList.contains('menu-open')));
+  document.querySelectorAll('#menuHex .menu-cell').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') setMenu(false); });
+}catch(e){console.warn('menu init failed',e);}})();
 </script>
 </body>
 </html>
